@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>DataMatrix Scanner</title>
+
+        <style>
+
+            body{
+                background:#111;
+                color:#fff;
+                font-family:Arial;
+                text-align:center;
+            }
+
+            #reader{
+                width:100%;
+                max-width:500px;
+                margin:auto;
+            }
+
+            #result{
+                margin-top:20px;
+                font-size:18px;
+                background:#222;
+                padding:10px;
+                border-radius:10px;
+            }
+
+            button{
+                margin-top:20px;
+                padding:12px 20px;
+                font-size:18px;
+                cursor:pointer;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <h2>Сканер DataMatrix</h2>
+
+        <div id="reader"></div>
+
+        <button onclick="start()">Старт</button>
+
+        <div id="result">Результат: -</div>
+
+        <script src="html5-qrcode.min.js"></script>
+
+        <script>
+
+            let scanner
+
+            function start() {
+
+                scanner = new Html5Qrcode("reader")
+
+                scanner.start(
+                        {facingMode: "environment"}, // задняя камера
+                        {
+                            fps: 20,
+                            qrbox: {width: 300, height: 300},
+                            formatsToSupport: [Html5QrcodeSupportedFormats.DATA_MATRIX]
+                        },
+                        (code) => {
+
+                    document.getElementById("result").innerText = code
+                    navigator.vibrate(100)
+
+                },
+                        (error) => {
+                }
+
+                )
+
+            }
+
+        </script>
+
+    </body>
+</html>
