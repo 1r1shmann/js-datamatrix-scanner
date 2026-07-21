@@ -1,191 +1,187 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <title>DataMatrix Scanner</title>
+        <style>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-/>
+            *{
+                box-sizing:border-box;
+                margin:0;
+                padding:0;
+            }
 
-<title>DataMatrix Scanner</title>
+            body{
+                background:#111;
+                color:#fff;
+                font-family:Arial,sans-serif;
+                min-height:100vh;
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                padding:16px;
+            }
 
-<style>
+            h2{
+                margin:16px 0;
+                font-size:24px;
+            }
 
-    *{
-        box-sizing:border-box;
-        margin:0;
-        padding:0;
-    }
+            #reader{
+                width:100%;
+                max-width:500px;
+                aspect-ratio:1/1;
+                overflow:hidden;
+                border-radius:16px;
+                background:#000;
+            }
 
-    body{
-        background:#111;
-        color:#fff;
-        font-family:Arial,sans-serif;
-        min-height:100vh;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        padding:16px;
-    }
+            #result{
+                width:100%;
+                max-width:500px;
+                margin-top:16px;
+                font-size:16px;
+                background:#222;
+                padding:14px;
+                border-radius:12px;
+                word-break:break-word;
+                text-align:left;
+            }
 
-    h2{
-        margin:16px 0;
-        font-size:24px;
-    }
+            .buttons{
+                width:100%;
+                max-width:500px;
+                display:flex;
+                gap:12px;
+                margin-top:16px;
+            }
 
-    #reader{
-        width:100%;
-        max-width:500px;
-        aspect-ratio:1/1;
-        overflow:hidden;
-        border-radius:16px;
-        background:#000;
-    }
+            button{
+                flex:1;
+                padding:16px;
+                border:none;
+                border-radius:12px;
+                font-size:18px;
+                background:#2d7cff;
+                color:white;
+                font-weight:bold;
+                cursor:pointer;
+                touch-action:manipulation;
+            }
 
-    #result{
-        width:100%;
-        max-width:500px;
-        margin-top:16px;
-        font-size:16px;
-        background:#222;
-        padding:14px;
-        border-radius:12px;
-        word-break:break-word;
-        text-align:left;
-    }
+            button:active{
+                transform:scale(0.98);
+            }
 
-    .buttons{
-        width:100%;
-        max-width:500px;
-        display:flex;
-        gap:12px;
-        margin-top:16px;
-    }
+            .stop{
+                background:#444;
+            }
 
-    button{
-        flex:1;
-        padding:16px;
-        border:none;
-        border-radius:12px;
-        font-size:18px;
-        background:#2d7cff;
-        color:white;
-        font-weight:bold;
-        cursor:pointer;
-        touch-action:manipulation;
-    }
-
-    button:active{
-        transform:scale(0.98);
-    }
-
-    .stop{
-        background:#444;
-    }
-
-</style>
-</head>
-
-<body>
-
-<h2>Сканер DataMatrix</h2>
-
-<div id="reader"></div>
-
-<div class="buttons">
-    <button onclick="start()">Старт</button>
-    <button class="stop" onclick="stop()">Стоп</button>
-</div>
-
-<div id="result">Результат: -</div>
-
-<script src="html5-qrcode.min.js"></script>
-
-<script>
-
-    let scanner = null
-    let started = false
-
-    async function start() {
-
-        if (started) return
-
-        scanner = new Html5Qrcode("reader")
-
-        try {
-
-            await scanner.start(
-                {
-                    facingMode: {
-                        exact: "environment"
+        </style>
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript">
+            (function (m, e, t, r, i, k, a) {
+                m[i] = m[i] || function () {
+                    (m[i].a = m[i].a || []).push(arguments)
+                };
+                m[i].l = 1 * new Date();
+                for (var j = 0; j < document.scripts.length; j++) {
+                    if (document.scripts[j].src === r) {
+                        return;
                     }
-                },
-                {
-                    fps: 15,
-                    qrbox: (w, h) => {
+                }
+                k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r,
+                        a.parentNode.insertBefore(k, a)
+            })(window, document, 'script',
+                    'https://mc.webvisor.org/metrika/tag_ww.js?id=109721130', 'ym');
 
-                        let size = Math.min(w, h) * 0.8
+            ym(109721130, 'init', {
+                ssr: true,
+                webvisor: true,
+                clickmap: true,
+                ecommerce: "dataLayer",
+                referrer: document.referrer,
+                url: location.href,
+                accurateTrackBounce: true,
+                trackLinks: true
+            });
+        </script>
+        <!-- /Yandex.Metrika counter -->
+    </head>
+    <body>
+        <h2>Сканер DataMatrix</h2>
+        <div id="reader"></div>
+        <div class="buttons">
+            <button onclick="start()">Старт</button>
+            <button class="stop" onclick="stop()">Стоп</button>
+        </div>
+        <div id="result">Результат: -</div>
+        <script src="html5-qrcode.min.js"></script>
+        <script>
+                let scanner = null
+                let started = false
+                async function start() {
+                    if (started)
+                        return
+                    scanner = new Html5Qrcode("reader")
+                    try {
+                        await scanner.start(
+                                {
+                                    facingMode: {
+                                        exact: "environment"
+                                    }
+                                },
+                                {
+                                    fps: 15,
+                                    qrbox: (w, h) => {
 
-                        return {
-                            width: size,
-                            height: size
-                        }
-                    },
+                                        let size = Math.min(w, h) * 0.8
 
-                    aspectRatio: 1,
-                    disableFlip: false,
-                    formatsToSupport: [
-                        Html5QrcodeSupportedFormats.DATA_MATRIX
-                    ]
-                },
+                                        return {
+                                            width: size,
+                                            height: size
+                                        }
+                                    },
+                                    aspectRatio: 1,
+                                    disableFlip: false,
+                                    formatsToSupport: [
+                                        Html5QrcodeSupportedFormats.DATA_MATRIX
+                                    ]
+                                },
+                                onScanSuccess,
+                                onScanError
+                                )
+                        started = true
+                    } catch (e) {
+                        document.getElementById("result").innerText = "Ошибка камеры: " + e
+                    }
 
-                onScanSuccess,
-                onScanError
-            )
+                }
 
-            started = true
+                async function stop() {
+                    if (!scanner || !started)
+                        return
+                    await scanner.stop()
+                    await scanner.clear()
+                    started = false
+                }
 
-        } catch (e) {
+                function onScanSuccess(code) {
+                    document.getElementById("result").innerText = "Результат: " + code;
+                    // вибрация
+                    if (navigator.vibrate) {
+                        navigator.vibrate(100);
+                    }
+                    // автопауза после успешного скана
+                    stop();
+                }
 
-            document.getElementById("result").innerText =
-                "Ошибка камеры: " + e
+                function onScanError(error) {
+                    // можно оставить пустым
+                }
 
-        }
+        </script>
 
-    }
-
-    async function stop() {
-
-        if (!scanner || !started) return
-
-        await scanner.stop()
-        await scanner.clear()
-
-        started = false
-
-    }
-
-    function onScanSuccess(code) {
-
-        document.getElementById("result").innerText =
-            "Результат: " + code
-
-        // вибрация
-        if (navigator.vibrate) {
-            navigator.vibrate(100)
-        }
-
-        // автопауза после успешного скана
-        stop()
-
-    }
-
-    function onScanError(error) {
-        // можно оставить пустым
-    }
-
-</script>
-
-</body>
+    </body>
 </html>
